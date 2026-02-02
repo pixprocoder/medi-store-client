@@ -1,6 +1,7 @@
 "use client";
 
 import { Mail, MapPin, Phone, Pill } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
@@ -45,11 +46,13 @@ export function Footer() {
                 <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
                     {/* Company Info */}
                     <div className="lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="flex items-center justify-center size-10 rounded-lg bg-primary text-primary-foreground">
-                                <Pill className="size-6" />
-                            </div>
-                            <span className="font-bold text-xl">MediStore</span>
+                        <Link href="/" className="flex items-center gap-2 font-bold text-xl mb-4">
+                            <Image
+                                src="/assets/logo/logo.svg"
+                                alt="logo"
+                                width={150}
+                                height={150}
+                            />
                         </Link>
                         <p className="text-sm text-muted-foreground mb-4 max-w-sm">
                             Your trusted online pharmacy offering prescription medicines,
