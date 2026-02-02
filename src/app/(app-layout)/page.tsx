@@ -1,7 +1,15 @@
+import { FeaturedCategories, FeaturedMedicines, FeaturesSection, HeroSection, NewsletterSection } from "@/components/modules/homepage"
 
 function page() {
     return (
-        <div className="min-h-screen">page</div>
+        <div >
+
+            <HeroSection />
+            <FeaturedMedicines />
+            <FeaturedCategories />
+            <FeaturesSection />
+            <NewsletterSection />
+        </div>
     )
 }
 

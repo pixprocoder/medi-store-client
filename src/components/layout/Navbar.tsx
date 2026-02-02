@@ -5,12 +5,10 @@ import {
     LogOut,
     Menu,
     Package,
-    Pill,
-    Search,
     Settings,
     ShoppingCart,
     User,
-    X,
+    X
 } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
@@ -24,20 +22,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { navLinks } from "@/constants";
+import Image from "next/image";
 import { ToggleTheme } from "./ToggleTheme";
 
-interface NavLink {
-    href: string;
-    label: string;
-}
 
-const navLinks: NavLink[] = [
-    { href: "/", label: "Home" },
-    { href: "/products", label: "Products" },
-    { href: "/categories", label: "Categories" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-];
 
 export function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -45,50 +34,37 @@ export function Navbar() {
     const [isLoggedIn] = React.useState(false); // Replace with actual auth state
 
     return (
-        <header className="container mx-auto sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-            <nav className="container flex h-16 items-center justify-between px-4">
+        <header className=" sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+            <nav className="container flex h-16 items-center justify-between ">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-                    <div className="flex items-center justify-center size-9 rounded-lg bg-primary text-primary-foreground">
-                        <Pill className="size-5" />
-                    </div>
-                    <span className="hidden sm:inline-block">MediStore</span>
+                    <Image
+                        src="/assets/logo/logo.svg"
+                        alt="logo"
+                        width={150}
+                        height={150}
+                    />
                 </Link>
 
                 {/* Desktop Navigation */}
                 <div className="hidden lg:flex items-center gap-1">
                     {navLinks.map((link) => (
                         <Link key={link.href} href={link.href}>
-                            <Button variant="ghost" size="sm">
+                            <Button className="hover:text-white" variant="ghost" size="sm">
                                 {link.label}
                             </Button>
                         </Link>
                     ))}
                 </div>
 
-                {/* Search Bar - Desktop */}
-                <div className="hidden md:flex flex-1 max-w-md mx-4">
-                    <div className="relative w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <input
-                            type="search"
-                            placeholder="Search medicines..."
-                            className="w-full h-9 pl-10 pr-4 rounded-md border bg-background text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
-                        />
-                    </div>
-                </div>
 
                 {/* Right Section */}
                 <div className="flex items-center gap-2">
-                    {/* Search Icon - Mobile */}
-                    <Button variant="ghost" size="icon" className="md:hidden">
-                        <Search className="size-5" />
-                        <span className="sr-only">Search</span>
-                    </Button>
+
 
                     {/* Shopping Cart */}
                     <Link href="/cart">
-                        <Button variant="ghost" size="icon" className="relative">
+                        <Button className="hover:text-white" variant="ghost" size="icon" className="relative">
                             <ShoppingCart className="size-5" />
                             {cartItemsCount > 0 && (
                                 <span className="absolute -top-1 -right-1 flex items-center justify-center size-5 text-xs font-bold text-white bg-primary rounded-full">
@@ -101,7 +77,7 @@ export function Navbar() {
 
                     {/* Wishlist */}
                     <Link href="/wishlist" className="hidden sm:inline-flex">
-                        <Button variant="ghost" size="icon">
+                        <Button className="hover:text-white" variant="ghost" size="icon">
                             <Heart className="size-5" />
                             <span className="sr-only">Wishlist</span>
                         </Button>
@@ -155,13 +131,13 @@ export function Navbar() {
                         </DropdownMenu>
                     ) : (
                         <div className="hidden sm:flex items-center gap-2">
-                            <Link href="/login">
-                                <Button variant="ghost" size="sm">
+                            <Link href="/auth/login">
+                                <Button className="hover:text-white" variant="ghost" size="sm">
                                     Login
                                 </Button>
                             </Link>
-                            <Link href="/register">
-                                <Button size="sm">Sign Up</Button>
+                            <Link className="hover:text-white" href="/auth/register">
+                                <Button size="sm">Register</Button>
                             </Link>
                         </div>
                     )}
@@ -185,17 +161,9 @@ export function Navbar() {
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="lg:hidden border-t bg-background">
+                <div className="lg:hidden bg-background">
                     <div className="container px-4 py-4 space-y-3">
-                        {/* Mobile Search */}
-                        <div className="md:hidden relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                            <input
-                                type="search"
-                                placeholder="Search medicines..."
-                                className="w-full h-10 pl-10 pr-4 rounded-md border bg-background text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all"
-                            />
-                        </div>
+
 
                         {/* Mobile Navigation Links */}
                         <div className="flex flex-col space-y-1">
@@ -219,15 +187,15 @@ export function Navbar() {
                         {/* Mobile Auth Buttons */}
                         {!isLoggedIn && (
                             <>
-                                <div className="pt-2 border-t" />
+                                <div className="pt-2 " />
                                 <div className="flex flex-col gap-2 sm:hidden">
-                                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                                    <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
                                         <Button variant="outline" className="w-full" size="sm">
                                             Login
                                         </Button>
                                     </Link>
                                     <Link
-                                        href="/register"
+                                        href="/auth/register"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         <Button className="w-full" size="sm">
