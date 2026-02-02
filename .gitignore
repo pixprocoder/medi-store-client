@@ -19,6 +19,7 @@
 
 # production
 /build
+PROJECT_RULES.md
 
 # misc
 .DS_Store
