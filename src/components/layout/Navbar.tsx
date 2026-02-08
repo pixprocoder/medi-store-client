@@ -64,7 +64,7 @@ export function Navbar() {
 
                     {/* Shopping Cart */}
                     <Link href="/cart">
-                        <Button className="hover:text-white" variant="ghost" size="icon" className="relative">
+                        <Button className="hover:text-white" variant="ghost" size="icon" >
                             <ShoppingCart className="size-5" />
                             {cartItemsCount > 0 && (
                                 <span className="absolute -top-1 -right-1 flex items-center justify-center size-5 text-xs font-bold text-white bg-primary rounded-full">
