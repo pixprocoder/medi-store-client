@@ -10,3 +10,7 @@ export const navLinks: NavLink[] = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
+
+// Re-export from other constant files
+export * from "./user";
+export * from "./dashboard-routes";

@@ -1,7 +1,13 @@
+"use client";
+
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import * as React from "react";
 import Image from "next/image";
+
+import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/store/useCartStore";
+import { useWishlistStore } from "@/store/useWishlistStore";
 
 interface MedicineCardProps {
     id: number;
@@ -30,11 +36,43 @@ export function MedicineCard({
         ? Math.round(((originalPrice - price) / originalPrice) * 100)
         : 0;
 
+    const { addItem, openCart } = useCartStore();
+    const isWishlisted = useWishlistStore((state) => state.items.includes(id));
+    const toggleWishlist = useWishlistStore((state) => state.toggle);
+    const [isAdding, setIsAdding] = React.useState(false);
+
+    const handleAddToCart = () => {
+        setIsAdding(true);
+
+        addItem({
+            id,
+            name,
+            category,
+            price,
+            image,
+        });
+
+
+
+        // Brief animation delay then open cart
+        setTimeout(() => {
+            setIsAdding(false);
+            openCart();
+        }, 300);
+    };
+
     return (
         <div className="group relative flex h-full flex-col overflow-hidden rounded-xl  bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
             {/* Wishlist Icon */}
-            <button className="absolute right-4 top-4 z-10 rounded-full bg-background p-2 shadow-sm transition-colors hover:bg-muted">
-                <Heart className="h-5 w-5" />
+            <button
+                className="absolute right-4 top-4 z-10 rounded-full bg-background p-2 shadow-sm transition-colors hover:bg-muted"
+                onClick={() => toggleWishlist(id)}
+            >
+                <Heart
+                    className={`h-5 w-5 transition-colors ${
+                        isWishlisted ? "fill-red-500 text-red-500" : ""
+                    }`}
+                />
             </button>
 
             {/* Discount Badge */}
@@ -109,8 +147,9 @@ export function MedicineCard({
                     {/* Button Right */}
                     <Button
                         className="h-10 w-10 rounded-lg p-0"
-                        disabled={!inStock}
+                        disabled={!inStock || isAdding}
                         size="icon"
+                        onClick={handleAddToCart}
                     >
                         <ShoppingCart className="h-5 w-5" />
                     </Button>

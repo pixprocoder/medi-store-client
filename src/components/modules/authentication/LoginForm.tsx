@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form-nextjs";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function LoginForm() {
     const [isLoading, setIsLoading] = React.useState(false);
+    const router = useRouter();
 
     const form = useForm({
         defaultValues: {
@@ -28,7 +30,11 @@ export function LoginForm() {
                     return;
                 }
 
+
                 toast.success("User Signed in Successfully", { id: toastId });
+                if (data?.token) {
+                    router.push('/')
+                }
             } catch (err) {
                 toast.error("Something went wrong, please try again.", { id: toastId });
             }
@@ -42,8 +48,7 @@ export function LoginForm() {
             provider: "google",
             callbackURL: "http://localhost:3000"
         });
-        console.log(data);
-        console.log(error);
+
         setTimeout(() => {
             setIsLoading(false);
         }, 1000);

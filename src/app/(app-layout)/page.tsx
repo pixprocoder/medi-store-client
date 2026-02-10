@@ -1,9 +1,8 @@
 import { FeaturedCategories, FeaturedMedicines, FeaturesSection, HeroSection, NewsletterSection } from "@/components/modules/homepage"
 
-function page() {
+async function page() {
     return (
         <div >
-
             <HeroSection />
             <FeaturedMedicines />
             <FeaturedCategories />
