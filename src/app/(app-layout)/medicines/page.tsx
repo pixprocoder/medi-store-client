@@ -1,7 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { Search, X } from "lucide-react";
 import { MedicineCard } from "@/components/modules/shared/MedicineCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,150 +10,46 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { MANUFACTURERS, PRICE_RANGES } from "@/types/filter.types";
+import { api } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { Search, X } from "lucide-react";
+import React from "react";
 
-// Mock data - replace with actual API call
-const MOCK_MEDICINES = [
-    {
-        id: 1,
-        name: "Paracetamol 500mg Tablets",
-        category: "Pain Relief",
-        manufacturer: "PharmaCorp",
-        price: 8.99,
-        originalPrice: 12.99,
-        rating: 4.5,
-        reviews: 128,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 2,
-        name: "Ibuprofen 400mg Capsules",
-        category: "Pain Relief",
-        manufacturer: "HealthMed",
-        price: 11.99,
-        originalPrice: 15.99,
-        rating: 4.7,
-        reviews: 256,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 3,
-        name: "Amoxicillin 250mg",
-        category: "Antibiotics",
-        manufacturer: "MediCare",
-        price: 24.99,
-        rating: 4.8,
-        reviews: 89,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 4,
-        name: "Vitamin D3 Supplements",
-        category: "Vitamins",
-        manufacturer: "VitaLife",
-        price: 15.99,
-        originalPrice: 19.99,
-        rating: 4.6,
-        reviews: 342,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 5,
-        name: "Aspirin 75mg Tablets",
-        category: "Pain Relief",
-        manufacturer: "PharmaCorp",
-        price: 6.99,
-        rating: 4.4,
-        reviews: 178,
-        inStock: false,
-        image: "/test.webp",
-    },
-    {
-        id: 6,
-        name: "Cetirizine 10mg",
-        category: "Allergy",
-        manufacturer: "HealthMed",
-        price: 9.99,
-        originalPrice: 13.99,
-        rating: 4.5,
-        reviews: 203,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 7,
-        name: "Omeprazole 20mg",
-        category: "Digestive Health",
-        manufacturer: "MediCare",
-        price: 18.99,
-        rating: 4.7,
-        reviews: 145,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 8,
-        name: "Multivitamin Complex",
-        category: "Vitamins",
-        manufacturer: "VitaLife",
-        price: 22.99,
-        originalPrice: 29.99,
-        rating: 4.8,
-        reviews: 412,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 9,
-        name: "Calcium Tablets 500mg",
-        category: "Vitamins",
-        manufacturer: "VitaLife",
-        price: 12.99,
-        rating: 4.3,
-        reviews: 167,
-        inStock: true,
-        image: "/test.webp",
-    },
-    {
-        id: 10,
-        name: "Azithromycin 250mg",
-        category: "Antibiotics",
-        manufacturer: "PharmaCorp",
-        price: 28.99,
-        originalPrice: 34.99,
-        rating: 4.9,
-        reviews: 92,
-        inStock: true,
-        image: "/test.webp",
-    },
-];
-
-const CATEGORIES = ["All", "Pain Relief", "Antibiotics", "Vitamins", "Allergy", "Digestive Health"];
-const MANUFACTURERS = ["All", "PharmaCorp", "HealthMed", "MediCare", "VitaLife"];
-const PRICE_RANGES = [
-    { label: "All Prices", min: 0, max: Infinity },
-    { label: "Under $10", min: 0, max: 10 },
-    { label: "$10 - $20", min: 10, max: 20 },
-    { label: "$20 - $30", min: 20, max: 30 },
-    { label: "Above $30", min: 30, max: Infinity },
-];
 
 function MedicinesPage() {
-
     const [searchQuery, setSearchQuery] = React.useState("");
     const [selectedCategory, setSelectedCategory] = React.useState("All");
     const [selectedManufacturer, setSelectedManufacturer] = React.useState("All");
     const [selectedPriceRange, setSelectedPriceRange] = React.useState("All Prices");
 
+    const { data: medicinesResponse, isLoading: isLoadingMedicines, error: medicinesError } = useQuery({
+        queryKey: ["medicines"],
+        queryFn: () => api.get<any[]>("/medicines"),
+    });
+
+    // Fetch categories
+    const { data: categoriesResponse, isLoading: isLoadingCategories } = useQuery({
+        queryKey: ["categories"],
+        queryFn: () => api.get<any[]>("/categories"),
+    });
+
+    const medicines = React.useMemo(
+        () => medicinesResponse?.data || [],
+        [medicinesResponse?.data]
+    );
+
+    const categories = React.useMemo(
+        () => categoriesResponse?.data || [],
+        [categoriesResponse?.data]
+    );
+
+
     // Filter logic
     const filteredMedicines = React.useMemo(() => {
         const priceRange = PRICE_RANGES.find((range) => range.label === selectedPriceRange);
 
-        return MOCK_MEDICINES.filter((medicine) => {
-            // Search filter
+        return medicines.filter((medicine) => {
             const matchesSearch =
                 searchQuery === "" ||
                 medicine.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -163,7 +57,7 @@ function MedicinesPage() {
 
             // Category filter
             const matchesCategory =
-                selectedCategory === "All" || medicine.category === selectedCategory;
+                selectedCategory === "All" || medicine.category.name === selectedCategory;
 
             // Manufacturer filter
             const matchesManufacturer =
@@ -177,7 +71,7 @@ function MedicinesPage() {
 
             return matchesSearch && matchesCategory && matchesManufacturer && matchesPrice;
         });
-    }, [searchQuery, selectedCategory, selectedManufacturer, selectedPriceRange]);
+    }, [medicines, searchQuery, selectedCategory, selectedManufacturer, selectedPriceRange]);
 
     // Clear all filters
     const clearFilters = () => {
@@ -194,6 +88,34 @@ function MedicinesPage() {
         selectedPriceRange !== "All Prices";
 
 
+
+    // Loading state
+    if (isLoadingMedicines || isLoadingCategories) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (medicinesError) {
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="text-center">
+                        <p className="text-destructive mb-2">Failed to load medicines</p>
+                        {/* <p className="text-sm text-muted-foreground">{medicinesError?.message}</p> */}
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -226,9 +148,10 @@ function MedicinesPage() {
                             <SelectValue placeholder="Category" />
                         </SelectTrigger>
                         <SelectContent>
-                            {CATEGORIES.map((category) => (
-                                <SelectItem key={category} value={category}>
-                                    {category}
+                            <SelectItem value="All">All</SelectItem>
+                            {categories?.map((category) => (
+                                <SelectItem key={category?.id} value={category?.name}>
+                                    {category?.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -278,7 +201,7 @@ function MedicinesPage() {
             {/* Results Count */}
             <div className="mb-4">
                 <p className="text-sm text-muted-foreground">
-                    Showing {filteredMedicines.length} of {MOCK_MEDICINES.length} products
+                    Showing {filteredMedicines.length} of {medicines.length} products
                 </p>
             </div>
 

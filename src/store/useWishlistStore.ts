@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface WishlistStore {
-  items: number[];
-  toggle: (id: number) => void;
+  items: string[];
+  toggle: (id: string) => void;
 }
 
 export const useWishlistStore = create<WishlistStore>()(
@@ -22,6 +22,6 @@ export const useWishlistStore = create<WishlistStore>()(
     }),
     {
       name: "medistore-wishlist",
-    }
-  )
+    },
+  ),
 );

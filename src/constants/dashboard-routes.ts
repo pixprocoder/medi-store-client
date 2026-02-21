@@ -117,12 +117,7 @@ export const dashboardRoutes: DashboardRoute[] = [
     icon: ClipboardList,
     roles: [UserRole.CUSTOMER],
   },
-  {
-    href: "/dashboard/wishlist",
-    label: "Wishlist",
-    icon: Heart,
-    roles: [UserRole.CUSTOMER],
-  },
+
   {
     href: "/dashboard/profile",
     label: "My Profile",

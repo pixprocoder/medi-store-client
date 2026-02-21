@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { CustomerProfile } from "@/components/dashboard/customer/CustomerProfile";
 
-function CustomerProfilePage() {
-    return (
-        <div>CustomerProfilePage</div>
-    )
+export default function CustomerProfilePage() {
+  return (
+    <DashboardShell>
+      <CustomerProfile />
+    </DashboardShell>
+  );
 }
-
-export default CustomerProfilePage

@@ -1,9 +1,11 @@
 "use client";
 
+import { Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { MobileSidebar } from "@/components/dashboard/MobileSidebar";
+import { Button } from "@/components/ui/button";
 import {
     getDashboardPath,
     getRoutesByRole,
@@ -103,6 +105,14 @@ export default function DashboardLayout({
 
             {/* Main Content Area */}
             <div className="flex  flex-1 flex-col overflow-hidden">
+                {/* Mobile top bar */}
+                <header className="flex h-14 items-center gap-3 border-b bg-background px-4 lg:hidden">
+                    <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
+                        <Menu className="h-5 w-5" />
+                    </Button>
+                    <span className="font-semibold">Dashboard</span>
+                </header>
+
                 <main className="flex-1 overflow-y-auto bg-muted/10 p-4 lg:p-6">
                     <div className="mx-auto max-w-7xl">{renderContent()}</div>
                 </main>

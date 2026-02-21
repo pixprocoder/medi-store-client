@@ -1,23 +1,15 @@
+import { ICartItem } from "@/types/cart.types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface CartItem {
-  id: number;
-  name: string;
-  category: string;
-  price: number;
-  image?: string;
-  quantity: number;
-}
-
 interface CartStore {
-  items: CartItem[];
+  items: ICartItem[];
   isOpen: boolean;
 
   // Actions
-  addItem: (item: Omit<CartItem, "quantity">) => void;
-  removeItem: (id: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
+  addItem: (item: Omit<ICartItem, "quantity">) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   toggleCart: () => void;
   openCart: () => void;
@@ -39,7 +31,7 @@ export const useCartStore = create<CartStore>()(
           // Item exists, increment quantity
           set({
             items: items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
             ),
           });
         } else {
@@ -67,7 +59,7 @@ export const useCartStore = create<CartStore>()(
 
         set({
           items: get().items.map((item) =>
-            item.id === id ? { ...item, quantity } : item
+            item.id === id ? { ...item, quantity } : item,
           ),
         });
       },
@@ -96,13 +88,13 @@ export const useCartStore = create<CartStore>()(
       name: "medistore-cart", // localStorage key
       // Only persist items, not the isOpen state
       partialize: (state) => ({ items: state.items }),
-    }
-  )
+    },
+  ),
 );
 
 // Selectors for computed values
 export const useTotalItems = () => useCartStore((state) => state.items.length);
 export const useTotalPrice = () =>
   useCartStore((state) =>
-    state.items.reduce((total, item) => total + item.price * item.quantity, 0)
+    state.items.reduce((total, item) => total + item.price * item.quantity, 0),
   );

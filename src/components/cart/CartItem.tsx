@@ -1,17 +1,16 @@
 "use client";
 
+import { Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useCartStore, type CartItem as CartItemType } from "@/store/useCartStore";
+import { useCartStore, } from "@/store/useCartStore";
 
-interface CartItemProps {
-    item: CartItemType;
-}
 
-export function CartItem({ item }: CartItemProps) {
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function CartItem({ item }: any) {
     const { updateQuantity, removeItem } = useCartStore();
 
     const handleIncrement = () => {
@@ -29,7 +28,7 @@ export function CartItem({ item }: CartItemProps) {
     };
 
     return (
-        <div className="flex gap-4 rounded-lg border bg-card p-3">
+        <div className="flex gap-4 rounded-lg  bg-card p-3">
             {/* Product Image */}
             <Link
                 href={`/medicines/${item.id}`}
@@ -52,7 +51,6 @@ export function CartItem({ item }: CartItemProps) {
                     >
                         {item.name}
                     </Link>
-                    <p className="text-xs text-muted-foreground">{item.category}</p>
                 </div>
 
                 <div className="flex items-center justify-between">
