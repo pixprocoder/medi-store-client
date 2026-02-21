@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { SellerMedicinesTable } from "@/components/dashboard/seller/SellerMedicinesTable";
 
-function SellerMedicinesPage() {
-    return (
-        <div>SellerMedicinesPage</div>
-    )
+export default function SellerMedicinesPage() {
+  return (
+    <DashboardShell>
+      <SellerMedicinesTable />
+    </DashboardShell>
+  );
 }
-
-export default SellerMedicinesPage

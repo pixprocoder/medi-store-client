@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { AdminOrdersTable } from "@/components/dashboard/admin/AdminOrdersTable";
 
-function OrdersPage() {
-    return (
-        <div>OrdersPage</div>
-    )
+export default function AdminOrdersPage() {
+  return (
+    <DashboardShell>
+      <AdminOrdersTable />
+    </DashboardShell>
+  );
 }
-
-export default OrdersPage

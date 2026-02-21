@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { SellerProfile } from "@/components/dashboard/seller/SellerProfile";
 
-function SellerProfilePage() {
-    return (
-        <div>SellerProfilePage</div>
-    )
+export default function SellerProfilePage() {
+  return (
+    <DashboardShell>
+      <SellerProfile />
+    </DashboardShell>
+  );
 }
-
-export default SellerProfilePage

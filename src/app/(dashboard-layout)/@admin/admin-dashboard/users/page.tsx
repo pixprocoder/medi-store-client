@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { AdminUsersTable } from "@/components/dashboard/admin/AdminUsersTable";
 
-function UserManagementPage() {
-    return (
-        <div>UserManagementPage</div>
-    )
+export default function AdminUsersPage() {
+  return (
+    <DashboardShell>
+      <AdminUsersTable />
+    </DashboardShell>
+  );
 }
-
-export default UserManagementPage

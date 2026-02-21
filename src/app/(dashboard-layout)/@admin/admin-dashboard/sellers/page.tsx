@@ -1,8 +1,10 @@
+import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { AdminUsersTable } from "@/components/dashboard/admin/AdminUsersTable";
 
-function SellerManagementPage() {
-    return (
-        <div>SellerManagementPage</div>
-    )
+export default function AdminSellersPage() {
+  return (
+    <DashboardShell>
+      <AdminUsersTable />
+    </DashboardShell>
+  );
 }
-
-export default SellerManagementPage
