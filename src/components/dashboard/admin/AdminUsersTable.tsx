@@ -1,8 +1,8 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as React from "react";
 import { Users } from "lucide-react";
+import * as React from "react";
 
 import { DataTable } from "@/components/dashboard/DataTable";
 import {
@@ -25,13 +25,13 @@ const STATUS_STYLES: Record<UserStatus, string> = {
 
 function StatusSelect({ user }: { user: IUser }) {
   const queryClient = useQueryClient();
-  const [status, setStatus] = React.useState<UserStatus>(user.status);
+  const [status, setStatus] = React.useState<UserStatus>(user.status!);
 
   const { mutate, isPending } = useMutation({
     mutationFn: (newStatus: UserStatus) => api.patch(`/admin/users/${user.id}`, { status: newStatus }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
     onError: (error: any) => {
-      setStatus(user.status); // revert to original on failure
+      setStatus(user.status!);
       const message = error?.message ?? "Failed to update status.";
       toast.error(message);
     },
@@ -64,10 +64,8 @@ export function AdminUsersTable() {
     queryKey: ["admin-users"],
     queryFn: () => api.get<IUser[]>("/admin/users"),
   });
-  console.log(data, isError)
 
   const users = data?.data ?? [];
-  console.log(users)
 
   if (isLoading) return <div className="h-48 w-full animate-pulse rounded-md bg-muted" />;
   if (isError) return (
