@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as React from "react";
 import { Users } from "lucide-react";
 
 import { DataTable } from "@/components/dashboard/DataTable";
@@ -14,6 +15,7 @@ import {
 import { UserStatus } from "@/constants/user";
 import { api } from "@/lib/api";
 import type { IUser } from "@/types/user.types";
+import { toast } from "sonner";
 
 const STATUS_STYLES: Record<UserStatus, string> = {
   ACTIVE: "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400",
@@ -23,13 +25,26 @@ const STATUS_STYLES: Record<UserStatus, string> = {
 
 function StatusSelect({ user }: { user: IUser }) {
   const queryClient = useQueryClient();
+  const [status, setStatus] = React.useState<UserStatus>(user.status);
+
   const { mutate, isPending } = useMutation({
-    mutationFn: (status: UserStatus) => api.patch(`/admin/users/${user.id}`, { status }),
+    mutationFn: (newStatus: UserStatus) => api.patch(`/admin/users/${user.id}`, { status: newStatus }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-users"] }),
+    onError: (error: any) => {
+      setStatus(user.status); // revert to original on failure
+      const message = error?.message ?? "Failed to update status.";
+      toast.error(message);
+    },
   });
 
+  function handleChange(v: string) {
+    const newStatus = v as UserStatus;
+    setStatus(newStatus);
+    mutate(newStatus);
+  }
+
   return (
-    <Select defaultValue={user.status} onValueChange={(v) => mutate(v as UserStatus)} disabled={isPending}>
+    <Select value={status} onValueChange={handleChange} disabled={isPending}>
       <SelectTrigger className="h-7 w-32 text-xs">
         <SelectValue />
       </SelectTrigger>
@@ -49,8 +64,10 @@ export function AdminUsersTable() {
     queryKey: ["admin-users"],
     queryFn: () => api.get<IUser[]>("/admin/users"),
   });
+  console.log(data, isError)
 
   const users = data?.data ?? [];
+  console.log(users)
 
   if (isLoading) return <div className="h-48 w-full animate-pulse rounded-md bg-muted" />;
   if (isError) return (

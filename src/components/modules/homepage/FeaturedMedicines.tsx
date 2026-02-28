@@ -4,8 +4,8 @@ import Link from "next/link";
 import { MedicineCard } from "@/components/modules/shared/MedicineCard";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
 import { IMedicine } from "@/types/medicine.types";
+import { useQuery } from "@tanstack/react-query";
 
 export function FeaturedMedicines() {
     const { data: medicinesResponse, isLoading: isLoadingMedicines, error: medicinesError } = useQuery({
@@ -39,7 +39,7 @@ export function FeaturedMedicines() {
 
                 <div className="mt-8 text-center sm:hidden">
                     <Button asChild variant="outline">
-                        <Link href="/products">View All Products</Link>
+                        <Link href="/Medicine">View All Medicine</Link>
                     </Button>
                 </div>
             </div>

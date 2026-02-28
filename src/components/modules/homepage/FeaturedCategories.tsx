@@ -25,7 +25,7 @@ export function FeaturedCategories() {
                         </p>
                     </div>
                     <Button asChild variant="ghost" className="hidden sm:flex">
-                        <Link href="/products">View All</Link>
+                        <Link href="/medicines">View All</Link>
                     </Button>
                 </div>
 
