@@ -47,8 +47,10 @@ export function RegisterForm() {
     async function handleGoogleSignIn() {
         const { data, error } = await authClient.signIn.social({
             provider: "google",
-            callbackURL: "http://localhost:3000",
+            callbackURL: process.env.NEXT_PUBLIC_APP_URL,
+
         });
+        console.log(data)
     }
 
     return (

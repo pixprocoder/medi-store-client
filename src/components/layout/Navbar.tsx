@@ -2,10 +2,9 @@
 
 import {
     Heart,
+    Layout,
     LogOut,
     Menu,
-    Package,
-    Settings,
     ShoppingCart,
     User,
     X
@@ -23,15 +22,27 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { navLinks } from "@/constants";
+import { authClient } from "@/lib/auth-client";
+import { useAuth } from "@/providers/AuthProvider";
+import { useCartStore, useTotalItems } from "@/store/useCartStore";
 import Image from "next/image";
+import { toast } from "sonner";
 import { ToggleTheme } from "./ToggleTheme";
 
 
 
 export function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-    const [cartItemsCount] = React.useState(3); // Replace with actual cart state
-    const [isLoggedIn] = React.useState(false); // Replace with actual auth state
+    const { user, session } = useAuth();
+    const isLoggedIn = !!session;
+
+    async function handleSignOut() {
+        await authClient.signOut();
+        toast.success("Logout successfully")
+    }
+    // console.log("use is from navbar", user)
+    const openCart = useCartStore((state) => state.openCart);
+    const totalItems = useTotalItems();
 
     return (
         <header className=" sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -59,21 +70,24 @@ export function Navbar() {
 
 
                 {/* Right Section */}
-                <div className="flex items-center gap-2">
+                <div className="flex  items-center gap-2">
 
 
                     {/* Shopping Cart */}
-                    <Link href="/cart">
-                        <Button className="hover:text-white" variant="ghost" size="icon" >
-                            <ShoppingCart className="size-5" />
-                            {cartItemsCount > 0 && (
-                                <span className="absolute -top-1 -right-1 flex items-center justify-center size-5 text-xs font-bold text-white bg-primary rounded-full">
-                                    {cartItemsCount}
-                                </span>
-                            )}
-                            <span className="sr-only">Shopping cart</span>
-                        </Button>
-                    </Link>
+                    <Button
+                        className="hover:text-white relative"
+                        variant="ghost"
+                        size="icon"
+                        onClick={openCart}
+                    >
+                        <ShoppingCart className="size-5" />
+                        {totalItems > 0 && (
+                            <span className="absolute -top-1 -right-1 flex items-center justify-center size-5 text-xs font-bold text-white bg-primary rounded-full">
+                                {totalItems}
+                            </span>
+                        )}
+                        <span className="sr-only">Shopping cart</span>
+                    </Button>
 
                     {/* Wishlist */}
                     <Link href="/wishlist" className="hidden sm:inline-flex">
@@ -96,34 +110,20 @@ export function Navbar() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                <DropdownMenuLabel>{user?.name ?? "My Account"}</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
-                                    <Link href="/profile" className="cursor-pointer">
-                                        <User className="mr-2 size-4" />
-                                        Profile
+                                    <Link href="/dashboard" className="cursor-pointer">
+                                        <Layout className="mr-2 size-4" />
+                                        Dashboard
                                     </Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href="/orders" className="cursor-pointer">
-                                        <Package className="mr-2 size-4" />
-                                        My Orders
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href="/wishlist" className="cursor-pointer">
-                                        <Heart className="mr-2 size-4" />
-                                        Wishlist
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href="/settings" className="cursor-pointer">
-                                        <Settings className="mr-2 size-4" />
-                                        Settings
-                                    </Link>
-                                </DropdownMenuItem>
+
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive cursor-pointer">
+                                <DropdownMenuItem
+                                    className="text-destructive cursor-pointer"
+                                    onClick={handleSignOut}
+                                >
                                     <LogOut className="mr-2 size-4" />
                                     Logout
                                 </DropdownMenuItem>
